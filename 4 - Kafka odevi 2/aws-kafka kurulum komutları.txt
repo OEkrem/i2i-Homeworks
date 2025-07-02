@@ -1,0 +1,62 @@
+amazon linux üzerinden ec2 üzerinden çalıştırıyorum.
+
+// -> bağlantı sağladık
+ssh -i pemdosyayolu ec2@x.x.x.x
+
+// kurulumlar yaptık
+sudo yum updaye -y
+sudo yum install -y docker
+
+// docker serivsi başlatılıyor
+sudo systemctl start docker
+sudo systemctl enable docker
+
+docker --version // versiyon kontrolü
+
+// docker-compose kurduk kanka
+sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+docker-compose --version
+
+
+mkdir kafka-compose
+cd kafka-compose
+nano docker-compose.yml
+
+version: '2'
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    mem_limit: 500m
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://<EC2-IP>:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_HEAP_OPTS: "-Xms256m -Xmx500m"
+    depends_on:
+      - zookeeper
+    mem_limit: 500m
+
+
+sudo usermod -aG docker ec2-user // docker izin sorunu çözmek için
+newgrp docker  // mevcut shell oturumunu güncellemek için lazım veya çık gir yapıcan
+docker ps // permission denied yoksa artık yetkin var demektir.
+
+docker-compose up -d  // hepsini ayağa kaldırdık artık
+
+// artık çalışıyor kanka...
+

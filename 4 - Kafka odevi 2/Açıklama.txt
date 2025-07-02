@@ -1,0 +1,7 @@
+
+AWS üzerinden kafka ve zookeper ayağa kaldırıldı.
+Producer ve Consumer olmak üzere iki proje de ayrı ayrı ayağa kaldırıldı. Docker-compose ile de ayapa kaldırılabiliyor.
+Bu iki java projemizin ayarlamalarında AWS üzerindeki public ip adresimiz yazılarak bağlantı sağlandı.
+Producer ve consumer üzerinden 3 saniyede bir hello mesajı gönderildi..
+
+// şimdilik localde çalışıyor
