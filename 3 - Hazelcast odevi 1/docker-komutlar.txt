@@ -1,0 +1,16 @@
+
+// image çekildi
+docker pull hazelcast/hazelcast:latest
+
+// container başlatıldı
+docker run -d --name hazelcast-node hazelcast/hazelcast:latest
+
+// management center image çekildi
+docker pull hazelcast/management-center:latest
+
+// management center başlatıldı
+docker run --rm -p 8080:8080 hazelcast/management-center:latest
+
+docker run --rm -p 8081:8080 hazelcast/management-center:latest // localda 8081 portunda çalışacak
+http://localhost:8081
+
