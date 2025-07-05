@@ -13,3 +13,4 @@ sudo docker pull full360/docker-voltdb-ce
 sudo docker run -d -p 21212:21212 --name myvoltdb full360/docker-voltdb-ce
 
 
+sudo docker run -it --rm --name voltdb-container -p 21212:21212 -p 8080:8080 -p 55004:55004 -v voltdb_data:/var/voltdb -e HOST_COUNT=1 full360/docker-voltdb-c
