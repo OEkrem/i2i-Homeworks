@@ -1,0 +1,35 @@
+
+
+
+ssh -i C:\Users\ASUS\Downloads\voltdb.pem ec2-user@13.62.48.103
+
+sudo yum update -y
+sudo yum install -y docker
+
+sudo systemctl start docker
+sudo systemctl enable docker
+
+sudo usermod -aG docker ec2-user
+
+sudo docker pull full360/docker-voltdb-ce
+sudo docker run -d -p 21212:21212 --name myvoltdb full360/docker-voltdb-ce
+
+// ----------------------------- ikinci adım
+sudo docker stop myvoltdb
+sudo docker rm myvoltdb
+
+sudo docker run -d \
+ -p 21212:21212 \
+ -p 8080:8080 \
+ --name myvoltdb full360/docker-voltdb-ce
+
+// ekstra 8080 protunu da aktif ettik ki UI'a bağlanalım
+// localde powershell ile kontrol: Test-NetConnection -ComputerName ec2-13-62-48-103.eu-north-1.compute.amazonaws.com -Port 21212
+// bash - ec2 üzerinden portlar LISTEN modunda mı check ediyoruz: sudo netstat -tlnp | grep 21212
+
+// dbeaver üzerindeki bağlantım: jdbc:voltdb://ec2-13-62-48-103.eu-north-1.compute.amazonaws.com:21212
+
+
+// knk 3 portu aktif ettim 21212, 8080, 55001 portları
+docker run -it --rm --name myvoltdb -p 21212:21212 -p 8080:8080 -p 55001:55001 -e HOST_COUNT=1 full360/
+docker-voltdb-ce
