@@ -1,0 +1,32 @@
+
+// docker
+docker pull gvenzl/oracle-xe:21.3.0
+docker run -d --name oracle-xe -p 1521:1521 -p 5500:5500 -e ORACLE_PASSWORD=YourPassword123 gvenzl/oracle-xe:21.3.0
+
+
+// DB'ye bağlanıp:
+CREATE USER BOOK_APP_USER IDENTIFIED BY StrongPassword123;
+GRANT CONNECT, RESOURCE TO BOOK_APP_USER;
+ALTER USER BOOK_APP_USER QUOTA UNLIMITED ON USERS; // böyle bişey gerekli çünkü oracle yetkilere bakmak için USERS tablosuna bakıyor
+
+
+https://www.oracle.com/database/technologies/appdev/jdbc-downloads.html
+yukarıdaki linkten - > ojdbs17.jar indirdim, direk maven'a otomatik eklenmiyor çünkü
+// aşağıdaki kod ile kendi oracle.jar'ı projeme ekledim
+mvn install:install-file "-Dfile=C:/Users/ASUS/Downloads/ojdbc17.jar" "-DgroupId=com.oracle.database.jdbc" "-DartifactId=ojdbc17" "-Dversion=23.8.0.25.04" "-Dpackaging=jar"
+-> ayrıca bir lib diye klasör açıp içerisine indirdiğim jar dosyasını koydum. sonrasında sağ tıklayıp add as library yaptım.
+
+// cmd içerisinde:şu komutu çalıştırdım çünkü intellij ide'de olmadı
+C:\Users\ASUS>mvn install:install-file -Dfile="C:\Users\ASUS\Downloads\ojdbc17.jar" -DgroupId=com.oracle.database.jdbc -DartifactId=ojdbc17 -Dversion=23.8.0.25.04 -Dpackaging=jar
+
+
+spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.OracleDialect
+
+<dependency>
+	<groupId>com.oracle.database.jdbc</groupId>
+	<artifactId>ojdbc17</artifactId>
+	<version>23.8.0.25.04</version>
+</dependency>
+
+şimdi mvn clean install yaptım çalıştı knk
